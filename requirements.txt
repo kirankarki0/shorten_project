@@ -1,0 +1,17 @@
+Django>=4.2
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-django>=4.5.0
+coverage>=7.0.0
+
+# Security dependencies
+django-ratelimit>=4.1.0
+django-csp>=3.7
+django-security>=0.20.0
+psycopg2-binary>=2.9.0  # PostgreSQL adapter
+redis>=4.5.0  # For caching and rate limiting
+
+# Production dependencies
+gunicorn>=21.0.0
+whitenoise>=6.5.0  # Static file serving

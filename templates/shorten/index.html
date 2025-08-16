@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>URL Shortener</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h1 class="mb-4">Simple URL Shortener</h1>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="{{ form.original_url.id_for_label }}" class="form-label">{{ form.original_url.label }}</label>
+            {{ form.original_url }}
+            {% if form.original_url.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.original_url.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="mb-3">
+            <label for="{{ form.custom_slug.id_for_label }}" class="form-label">{{ form.custom_slug.label }}</label>
+            {{ form.custom_slug }}
+            {% if form.custom_slug.help_text %}
+              <div class="form-text">{{ form.custom_slug.help_text }}</div>
+            {% endif %}
+            {% if form.custom_slug.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.custom_slug.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <button class="btn btn-primary">Shorten</button>
+        </form>
+      </div>
+    </div>
+
+    {% if created %}
+      <div class="alert alert-success">
+        <strong>Short link created!</strong><br>
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <div class="url-display flex-grow-1" id="shortUrl">
+            http://{{ domain }}/{{ created.slug }}/
+          </div>
+          <button class="btn btn-outline-secondary copy-btn" onclick="copyToClipboard()" id="copyBtn">
+            <svg width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+              <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+              <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <div class="mt-2">
+          <a href="http://{{ domain }}/{{ created.slug }}/" target="_blank" class="alert-link">
+            Test link
+          </a>
+          {% if created.slug|length <= 6 %}
+            <span class="badge bg-secondary ms-2">Auto-generated</span>
+          {% else %}
+            <span class="badge bg-primary ms-2">Custom</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <h5>Recent</h5>
+    <table class="table table-sm">
+      <thead><tr><th>Short</th><th>Original</th><th>Hits</th><th>Type</th></tr></thead>
+      <tbody>
+        {% for item in recent %}
+          <tr>
+            <td><a href="http://{{ domain }}/{{ item.slug }}/">/{{ item.slug }}/</a></td>
+            <td><a href="{{ item.original_url }}" target="_blank">{{ item.original_url }}</a></td>
+            <td>{{ item.hits }}</td>
+            <td>
+              {% if item.slug|length <= 6 %}
+                <span class="badge bg-secondary">Auto</span>
+              {% else %}
+                <span class="badge bg-primary">Custom</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4">No links yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="{% static 'js/clipboard.js' %}"></script>
+</body>
+</html>
