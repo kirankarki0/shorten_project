@@ -1,8 +1,8 @@
-# Shorten Project
+# URL Shortener Project
 
-Minimal Django URL shortener following KISS and DRY principles.
+This is a **minimal Django URL shortener** application that follows the **KISS (Keep It Simple, Stupid)** and **DRY (Don't Repeat Yourself)** principles. The project provides a clean, straightforward solution for creating shortened URLs with basic analytics tracking.
 
-Quick start
+## Quick start
 1. Create virtualenv and install requirements
    python -m venv venv
    source venv/bin/activate
